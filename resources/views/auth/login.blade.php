@@ -19,7 +19,7 @@
                     <a class="link-fx fw-bold" href="{{ route('login') }}">
                         <img src="{{ asset('images/logo1_pakarti.png') }}" width="150px"/>
                     </a>
-                    <h1 class="h3 fw-bold mb-2 text-white">Selamat Datang</h1>
+                    <h1 class="h3 fw-bold mb-2 text-white">Selamat Datang baru</h1>
                     <h2 class="h5 fw-medium text-white mb-0">Silahkan Login Terlebih Dahulu!</h2>
                 </div>
                 <!-- END Header -->
