@@ -153,13 +153,11 @@
 
         function hitung(){
             var tipe = $("#field-tipe").val();
-            if(tipe == 'beli'){
                 var hrg = parseInt($("#field-harga").val());
                 var jml = parseInt($("#field-jumlah").val());
                 var total = hrg*jml;
                 $("#field-total").val(total);
                 console.log(total);
-            }
         }
 
         $(".tgl").flatpickr({
