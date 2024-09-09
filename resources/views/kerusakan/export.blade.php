@@ -1,7 +1,59 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/css/bootstrap.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Kerusakan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin: 0;
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid #000;
+            margin-top: 10px;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>

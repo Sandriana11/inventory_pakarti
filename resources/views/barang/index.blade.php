@@ -111,7 +111,9 @@
                             </div>
                             <div class="mb-4">
                                 <label for="field-status">Status Laporan</label>
-                                <select class="form-control" id="field-status" name="status">
+                                <select class="form-select {{ $errors->has('status') ? 'is-invalid' : '' }}"
+                                    id="field-status" style="width: 100%;" name="status"
+                                    data-placeholder="Pilih Status">
                                     <option value="">Semua Status</option>
                                     <option value="tersedia">Tersedia</option>
                                     <option value="diperbaiki">Diperbaiki</option>
@@ -209,6 +211,7 @@
                 data.tahun = $('#field-tahun').val(); // Kirim tahun ke server
                 data.lokasi_id = $('#field-lokasi_id').val();
                 data.kategori_id = $('#field-kategori_id').val();
+                data.status = $('#field-status').val();
             }
         },
         columns: [

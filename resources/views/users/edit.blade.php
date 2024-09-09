@@ -38,6 +38,14 @@
                         </div>
                     </div>
                     <div class="row mb-4">
+                        <label class="col-sm-3 col-form-label" for="field-email">Email</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
+                                id="field-email" name="email" placeholder="Masukan email" value="{{ old('email', $data->username) }}">
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-bidang_id">Bidang</label>
                         <div class="col-sm-6">
                             <select class="form-select  {{ $errors->has('bidang_id') ? 'is-invalid' : '' }}" id="field-bidang_id"

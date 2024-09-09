@@ -76,64 +76,67 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        // dd($request->all());
-        $rules = [
-            'nip' => 'required|numeric|max_digits:18|unique:users,nip',
-            'nama' => 'required|string',
-            'bidang_id' => 'required',
-            'username' => 'required|unique:users,username',
-            'password' => 'required|same:password_confirmation',
-            'password_confirmation' => 'required',
-            'level' => 'required'
-        ];
+{
+    $rules = [
+        'nip' => 'required|numeric|max_digits:18|unique:users,nip',
+        'nama' => 'required|string',
+        'bidang_id' => 'required',
+        'username' => 'required|unique:users,username',
+        'email' => 'required|email|unique:users,email', // Menambahkan aturan validasi email
+        'password' => 'required|same:password_confirmation',
+        'password_confirmation' => 'required',
+        'level' => 'required'
+    ];
 
-        $pesan = [
-            'nip.required' => 'NIP Wajib Diisi!',
-            'nip.numeric' => 'NIP Hanya Boleh Angka!',
-            'nip.unique' => 'NIP Sudah Terdaftar!',
-            'nip.max_digits' => 'NIP Maksimal 18 Angka!',
-            'username.required' => 'Username Wajib Diisi!',
-            'username.unique' => 'Username Sudah Terdaftar!',
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
-            'bidang_id.required' => 'Bidang Wajib Diisi!',
-            'password.required' => 'Password Wajib Diisi!',
-            'password.same' => 'Konfirmasi Password Tidak Sama!',
-            'password_confirmation' => 'Konfirmasi Password Wajib Diisi',
-            'level' => 'Konfirmasi Password Wajib Diisi',
-        ];
+    $pesan = [
+        'nip.required' => 'NIP Wajib Diisi!',
+        'nip.numeric' => 'NIP Hanya Boleh Angka!',
+        'nip.unique' => 'NIP Sudah Terdaftar!',
+        'nip.max_digits' => 'NIP Maksimal 18 Angka!',
+        'username.required' => 'Username Wajib Diisi!',
+        'username.unique' => 'Username Sudah Terdaftar!',
+        'nama.required' => 'Nama Lengkap Wajib Diisi!',
+        'bidang_id.required' => 'Bidang Wajib Diisi!',
+        'email.required' => 'Email Wajib Diisi!',
+        'email.email' => 'Format Email Tidak Valid!',
+        'email.unique' => 'Email Sudah Terdaftar!',
+        'password.required' => 'Password Wajib Diisi!',
+        'password.same' => 'Konfirmasi Password Tidak Sama!',
+        'password_confirmation.required' => 'Konfirmasi Password Wajib Diisi',
+        'level.required' => 'Level Wajib Diisi!',
+    ];
 
+    $validator = Validator::make($request->all(), $rules, $pesan);
+    if ($validator->fails()){
+        return back()->withInput()->withErrors($validator->errors());
+    }else{
+        DB::beginTransaction();
+        try{
+            $data = new User();
+            $data->nip = $request->nip;
+            $data->name = $request->nama;
+            $data->username = $request->username;
+            $data->email = $request->email; // Menambahkan penyimpanan email
+            $data->bidang_id = $request->bidang_id;
+            $data->password = Hash::make($request->password);
+            $data->level = $request->level;
+            $data->save();
 
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return back()->withInput()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-
-                $data = new User();
-                $data->nip = $request->nip;
-                $data->name = $request->nama;
-                $data->username = $request->username;
-                $data->bidang_id = $request->bidang_id;
-                $data->password = Hash::make($request->password);
-                $data->level = $request->level;
-                $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return response()->json([
-                    'fail' => true,
-                    'errors' => $e,
-                    'pesan' => 'Error Menyimpan Data Anggota',
-                ]);
-            }
-
-            DB::commit();
-
-            return redirect()->route('user.index');
+        }catch(\QueryException $e){
+            DB::rollback();
+            return response()->json([
+                'fail' => true,
+                'errors' => $e,
+                'pesan' => 'Error Menyimpan Data Anggota',
+            ]);
         }
+
+        DB::commit();
+
+        return redirect()->route('user.index');
     }
+}
+
 
     /**
      * Display the specified resource.
@@ -171,54 +174,61 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        $rules = [
-            'nip' => 'required',
-            'nama' => 'required|string',
-            'bidang' => 'required',
-            'hp' => 'required',
-        ];
+{
+    $rules = [
+        'nip' => 'required',
+        'nama' => 'required|string',
+        'bidang' => 'required',
+        'hp' => 'required',
+        'email' => 'nullable|email|unique:users,email,' . $id, // Menambahkan aturan validasi email
+    ];
 
-        $pesan = [
-            'nip.required' => 'NIP Wajib Diisi!',
-            'nip.exists' => 'NIP Sudah Terdaftar!',
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
-            'bidang.required' => 'Bidang Wajib Diisi!',
-            'hp.required' => 'No Handphone Wajib Diisi!',
-        ];
+    $pesan = [
+        'nip.required' => 'NIP Wajib Diisi!',
+        'nip.exists' => 'NIP Sudah Terdaftar!',
+        'nama.required' => 'Nama Lengkap Wajib Diisi!',
+        'bidang.required' => 'Bidang Wajib Diisi!',
+        'hp.required' => 'No Handphone Wajib Diisi!',
+        'email.email' => 'Format Email Tidak Valid!',
+        'email.unique' => 'Email Sudah Terdaftar!',
+    ];
 
-
-        $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
-            return back()->withErrors($validator->errors());
-        }else{
-            DB::beginTransaction();
-            try{
-
-                $data = Pegawai::where('nip', $id)->first();
-                $data->nip = $request->nip;
-                $data->nama = $request->nama;
-                $data->bidang = $request->bidang;
-                $data->hp = $request->hp;
-                $data->save();
-
-            }catch(\QueryException $e){
-                DB::rollback();
-                return response()->json([
-                    'fail' => true,
-                    'errors' => $e,
-                    'pesan' => 'Error Menyimpan Data Anggota',
-                ]);
+    $validator = Validator::make($request->all(), $rules, $pesan);
+    if ($validator->fails()){
+        return back()->withErrors($validator->errors());
+    }else{
+        DB::beginTransaction();
+        try{
+            $data = Pegawai::where('nip', $id)->first();
+            $data->nip = $request->nip;
+            $data->nama = $request->nama;
+            $data->bidang = $request->bidang;
+            $data->hp = $request->hp;
+            
+            if ($request->has('email')) {
+                $data->email = $request->email; // Menambahkan penyimpanan email jika ada
             }
 
-            DB::commit();
-            if($request->level_id > 2){
-                return redirect()->route('user.dukungan.relawan');
-            }
+            $data->save();
 
-            return redirect()->route('pegawai.index');
+        }catch(\QueryException $e){
+            DB::rollback();
+            return response()->json([
+                'fail' => true,
+                'errors' => $e,
+                'pesan' => 'Error Menyimpan Data Anggota',
+            ]);
         }
+
+        DB::commit();
+        if ($request->level_id > 2) {
+            return redirect()->route('user.dukungan.relawan');
+        }
+
+        return redirect()->route('pegawai.index');
     }
+}
+
 
     /**
      * Remove the specified resource from storage.
