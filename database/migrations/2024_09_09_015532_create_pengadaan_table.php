@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('nama'); 
             $table->unsignedBigInteger('kategori_id'); 
             $table->integer('qty')->default(0); 
-            $table->float('harga')->default(0); 
-            $table->float('total')->default(0); 
+            $table->integer('harga')->default(0); 
+            $table->integer('total')->default(0); 
             $table->unsignedBigInteger('lokasi_id'); 
             $table->date('tgl'); 
             $table->text('deskripsi')->nullable(); 
