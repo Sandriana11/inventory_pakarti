@@ -147,6 +147,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/select','InventarisController@select')->name('select');
             Route::get('/create','InventarisController@create')->name('create');
             Route::post('/store','InventarisController@store')->name('store');
+            Route::get('/export','InventarisController@export')->name('export');
             Route::get('/{id}','InventarisController@show')->name('show');
             Route::get('/{id}/json','InventarisController@json')->name('json');
             Route::get('/{id}/edit','InventarisController@edit')->name('edit');

@@ -20,7 +20,7 @@ class Bidang extends Model
 
     
 
-    protected $table = 'bidang';
+    protected $table = 'bidangs';
 
     protected $primaryKey = 'id';
 

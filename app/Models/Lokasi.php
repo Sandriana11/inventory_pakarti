@@ -9,7 +9,7 @@ class Lokasi extends Model
 {
     use HasFactory;
     
-    protected $table = 'lokasi';
+    protected $table = 'lokasis';
     protected $primaryKey = 'id';
 
     

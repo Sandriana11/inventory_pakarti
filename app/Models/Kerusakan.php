@@ -20,7 +20,7 @@ class Kerusakan extends Model
 
     
 
-    protected $table = 'crash';
+    protected $table = 'crashes';
 
     protected $primaryKey = 'id';
 

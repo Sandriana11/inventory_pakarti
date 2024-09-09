@@ -16,6 +16,17 @@
                 <form method="POST" action="{{ route('pengadaan.store') }}">
                     @csrf
                     <div class="row mb-4">
+                        <label class="col-sm-3 col-form-label" for="field-tipe">Jenis</label>
+                        <div class="col-sm-6">
+                            <select class="form-control {{ $errors->has('tipe ') ? 'is-invalid' : '' }}" name="tipe" id="field-tipe" onchange="pilihTipe()">
+                                <option value="">Pilih</option>
+                                <option value="beli" {{ (old('tipe') == "beli") ? 'selected="selected"' : '' }}>Beli</option>
+                                <option value="sewa" {{ (old('tipe') == "sewa") ? 'selected="selected"' : '' }}>Sewa</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('tipe')" class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-tgl">Tanggal</label>
                         <div class="col-sm-6">
                             <input type="text"
@@ -35,18 +46,6 @@
                         </div>
                     </div>
                     <div class="row mb-4">
-                        <label class="col-sm-3 col-form-label" for="field-tipe">Jenis</label>
-                        <div class="col-sm-6">
-                            <select class="form-control {{ $errors->has('tipe ') ? 'is-invalid' : '' }}" name="tipe" id="field-tipe" onchange="pilihTipe()">
-                                <option value="">Pilih</option>
-                                <option value="beli" {{ (old('tipe') == "beli") ? 'selected="selected"' : '' }}>Beli</option>
-                                <option value="hibah" {{ (old('tipe') == "hibah") ? 'selected="selected"' : '' }}>Hibah</option>
-                                <option value="diberi" {{ (old('tipe') == "diberi") ? 'selected="selected"' : '' }}>Diberi</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('tipe')" class="mt-2" />
-                        </div>
-                    </div>
-                    <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-nama">Nama Barang</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control {{ $errors->has('nama') ? 'is-invalid' : '' }}"
@@ -56,7 +55,7 @@
                         </div>
                     </div>
                     <div class="row mb-4" id="harga">
-                        <label class="col-sm-3 col-form-label" for="field-harga">Harga Barang</label>
+                        <label class="col-sm-3 col-form-label" for="field-harga">Harga</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control {{ $errors->has('harga') ? 'is-invalid' : '' }}" onchange="hitung()"
                                 id="field-harga" name="harga" placeholder="Masukan Harga Barang"
@@ -141,16 +140,16 @@
 
         $('#field-lokasi_id').select2();
 
-        function pilihTipe(){
-            var tipe = $("#field-tipe").val();
-            if(tipe == 'beli'){
-                $('#harga').show();
-                $('#total').show();
-            }else{
-                $('#harga').hide();
-                $('#total').hide();
-            }
-        }
+        // function pilihTipe(){
+        //     var tipe = $("#field-tipe").val();
+        //     if(tipe == 'beli'){
+        //         $('#harga').show();
+        //         $('#total').show();
+        //     }else{
+        //         $('#harga').hide();
+        //         $('#total').hide();
+        //     }
+        // }
 
         function hitung(){
             var tipe = $("#field-tipe").val();

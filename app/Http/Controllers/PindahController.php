@@ -27,7 +27,7 @@ class PindahController extends Controller
     {
         if ($request->ajax()) {
 
-            $data = Pindah::select('pindah.*')->with(['lokasi'])->withCount('lines')->latest()->get();
+            $data = Pindah::select('pindahs.*')->with(['lokasi'])->withCount('lines')->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){

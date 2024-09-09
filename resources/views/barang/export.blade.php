@@ -20,21 +20,20 @@
             </tr>
         </table>
         <hr/>
-        <h2 class="h3 text-center" style="font-weight: bold; margin-top:0px">LAPORAN KERUSAKAN</h2>
+        <h2 class="h3 text-center" style="font-weight: bold; margin-top:0px">LAPORAN INVENTARIS</h2>
         <h2 class="h4 text-center" style="font-weight: bold; margin-top:0px">
-            Periode : {{ \Carbon\Carbon::parse($tgl[0])->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($tgl[1])->translatedFormat('d F Y') }}
+            Tanggal : {{ \Carbon\Carbon::parse($tgl)->translatedFormat('d F Y') }}
         </h2>
         <table class="table table-bordered datatable w-100">
             <thead>
                 <tr>
                     <th width="50px">No</th>
-                    <th>No Laporan</th>
-                    <th>Tanggal</th>
-                    <th>Pelapor</th>
-                    <th>Barang</th>
+                    <th>No Inventaris</th>
+                    <th>Nama Barang</th>
+                    <th>Kategori</th>
                     <th>Lokasi</th>
+                    <th>Tahun</th>
                     <th>Status</th>
-                    <th>Keterangan</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,12 +44,11 @@
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $a->nomor }}</td>
-                        <td>{{ \Carbon\Carbon::parse($a->tgl)->translatedFormat('d F Y') }}</td>
-                        <td>{{ $a->pelapor->name }}</td>
-                        <td>{{ $a->barang->nama }}</td>
-                        <td>{{ $a->barang->lokasi->nama }}</td>
+                        <td>{{ $a->nama }}</td>
+                        <td>{{ $a->kategori->nama }}</td>
+                        <td>{{ $a->lokasi->nama }}</td>
+                        <td>{{ $a->tahun }}</td>
                         <td>{{ $a->status }}</td>
-                        <td>{{ $a->keterangan }}</td>
                     </tr>
                 @endforeach
             </tbody>

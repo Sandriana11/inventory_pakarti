@@ -19,7 +19,7 @@ class LokasiController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Lokasi::select('lokasi.*')->withCount('barang')->latest()->get();
+            $data = Lokasi::select('lokasis.*')->withCount('barang')->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -52,10 +52,13 @@ class LokasiController extends Controller
     {
         $rules = [
             'nama' => 'required',
+            'kode' => 'required|unique:lokasis,kode',
         ];
 
         $pesan = [
             'nama.required' => 'Nama Lengkap Wajib Diisi!',
+            'kode.required' => 'Kode Wajib Diisi!',
+            'kode.unique' => 'Kode Departemen Sudah Digunakan!',
         ];
 
 
@@ -68,6 +71,7 @@ class LokasiController extends Controller
 
                 $data = new Lokasi();
                 $data->nama = $request->nama;
+                $data->kode = $request->kode;
                 $data->save();
 
             }catch(\QueryException $e){
@@ -106,10 +110,14 @@ class LokasiController extends Controller
     {
         $rules = [
             'nama' => 'required',
+            'kode' => 'required|unique:lokasis,kode',
+
         ];
 
         $pesan = [
             'nama.required' => 'Nama Lengkap Wajib Diisi!',
+            'kode.required' => 'Kode Wajib Diisi!',
+            'kode.unique' => 'Kode Departemen Sudah Digunakan!',
         ];
 
 
@@ -122,6 +130,7 @@ class LokasiController extends Controller
 
                 $data = Lokasi::where('id', $id)->first();
                 $data->nama = $request->nama;
+                $data->kode = $request->kode;
                 $data->save();
 
             }catch(\QueryException $e){

@@ -48,6 +48,15 @@
                         </div>
                     </div>
                     <div class="row mb-4">
+                        <label class="col-sm-3 col-form-label" for="field-tahun">Tahun</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control {{ $errors->has('tahun') ? 'is-invalid' : '' }}"
+                                id="field-tahun" name="tahun" placeholder="Masukan Tahun"
+                                value="{{ old('tahun', $data->tahun) ?? '' }}">
+                            <x-input-error :messages="$errors->get('tahun')" class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-deskripsi">Deskripsi</label>
                         <div class="col-sm-6">
                             <textarea class="form-control {{ $errors->has('deskripsi') ? 'is-invalid' : '' }}"

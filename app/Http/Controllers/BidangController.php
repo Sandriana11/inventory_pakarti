@@ -19,7 +19,7 @@ class BidangController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Bidang::select('bidang.*')->withCount('pegawai')->latest()->get();
+            $data = Bidang::select('bidangs.*')->withCount('pegawai')->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){

@@ -37,6 +37,7 @@
                             <th>Tanggal</th>
                             <th>Pelapor</th>
                             <th>Barang</th>
+                            <th>Keterangan</th>
                             <th width="100px">Status</th>
                             <th width="60px">Aksi</th>
                         </tr>
@@ -145,6 +146,7 @@
                 {data: 'tgl', name: 'tgl'},
                 {data: 'pelapor.name.', name: 'pelapor.name'},
                 {data: 'barang.nama', name: 'barang.nama'},
+                {data: 'keterangan', name: 'keterangan'},
                 {data: 'status', name: 'status'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]

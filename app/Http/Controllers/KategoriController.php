@@ -21,7 +21,7 @@ class KategoriController extends Controller
     {
         
         if ($request->ajax()) {
-            $data = Kategori::select('kategori.*')->withCount('barang')->latest()->get();
+            $data = Kategori::select('kategoris.*')->withCount('barang')->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -55,7 +55,7 @@ class KategoriController extends Controller
     {
         $rules = [
             'nama' => 'required',
-            'kode' => 'required|unique:kategori,kode',
+            'kode' => 'required|unique:kategoris,kode',
         ];
 
         $pesan = [
@@ -124,7 +124,7 @@ class KategoriController extends Controller
     {
         $rules = [
             'nama' => 'required',
-            'kode' => 'required|unique:kategori,kode',
+            'kode' => 'required|unique:kategoris,kode',
         ];
 
         $pesan = [

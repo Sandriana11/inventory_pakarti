@@ -16,6 +16,13 @@
                                 <input type="text" class="form-control {{ $errors->has('nama') ? 'is-invalid' : '' }}" id="val-nama" name="nama" placeholder="Masukan Nama">
                                 <x-input-error :messages="$errors->get('nama')" class="mt-2" />
                             </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="val-kode">Kode
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control {{ $errors->has('kode') ? 'is-invalid' : '' }}" id="val-kode" name="kode" placeholder="Masukan Kode">
+                                <x-input-error :messages="$errors->get('kode')" class="mt-2" />
+                            </div>
                             <button type="submit" class="btn btn-lg btn-alt-primary fw-medium w-100">
                                 Simpan
                             </button>

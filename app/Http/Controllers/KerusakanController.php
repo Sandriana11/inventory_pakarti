@@ -8,6 +8,7 @@ use App\Models\Kerusakan;
 use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Lokasi;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use DataTables;
 
 use Illuminate\Support\Facades\Validator;
@@ -29,16 +30,16 @@ class KerusakanController extends Controller
             $tgl = $request->tgl;
 
 
-            $data = Kerusakan::select('crash.*')->with(['barang', 'pelapor', 'perbaikan'])
+            $data = Kerusakan::select('crashes.*')->with(['barang', 'pelapor', 'perbaikan'])
             ->when(auth()->user()->level == 'eksekutor', function ($q){
                 $q->withWhereHas('perbaikan', function ($query){
                     return $query->where('eksekutor_id', auth()->user()->id);
                 });
             })
             ->when(isset($tgl), function ($q) use ($tgl) {
-                return $q->whereBetween('crash.tgl', $tgl);
+                return $q->whereBetween('crashes.tgl', $tgl);
             })->when(auth()->user()->level == 'pegawai', function ($q){
-                return $q->where('crash.user_id', auth()->user()->id);
+                return $q->where('crashes.user_id', auth()->user()->id);
             })->latest()->get();
 
             return Datatables::of($data)
@@ -162,7 +163,7 @@ class KerusakanController extends Controller
      */
     public function show($id)
     {
-        $data = Kerusakan::select('crash.*')->with(['barang', 'pelapor'])->where('id', $id)->first();
+        $data = Kerusakan::select('crashes.*')->with(['barang', 'pelapor'])->where('id', $id)->first();
 
         return view('kerusakan.show',[
             'data' => $data
@@ -286,21 +287,19 @@ class KerusakanController extends Controller
         }
     }
 
-    
-    
     public function export(Request $request)
     {
         $tgl = explode(" - ",$request->tgl);
         $status = $request->status;
         // dd($tgl);
-        $data = Kerusakan::select('crash.*')->with(['barang', 'pelapor'])
+        $data = Kerusakan::select('crashes.*')->with(['barang', 'pelapor'])
         ->when(isset($tgl), function ($q) use ($tgl) {
-            return $q->whereBetween('crash.tgl', $tgl);
+            return $q->whereBetween('crashes.tgl', $tgl);
         })->when(isset($status), function ($q) use ($status) {
-            return $q->where('crash.status', $status);
+            return $q->where('crashes.status', $status);
         })->latest()->get();
 
-        $pdf = PDF::loadView('kerusakan.export', [
+        $pdf = FacadePdf::loadView('kerusakan.export', [
             'data' => $data,
             'tgl' => $tgl,
             'status' => $status,

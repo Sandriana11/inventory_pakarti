@@ -9,7 +9,7 @@ class Maintener extends Model
 {
     use HasFactory;
     
-    protected $table = 'maintener';
+    protected $table = 'mainteners';
     protected $primaryKey = 'id';
 
     

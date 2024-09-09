@@ -9,7 +9,7 @@ class Pindah extends Model
 {
     use HasFactory;
     
-    protected $table = 'pindah';
+    protected $table = 'pindahs';
     protected $primaryKey = 'id';
 
     protected $fillable = [

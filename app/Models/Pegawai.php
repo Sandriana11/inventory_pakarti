@@ -9,7 +9,7 @@ class Pegawai extends Model
 {
     use HasFactory;
     
-    protected $table = 'pegawai';
+    protected $table = 'pegawais';
     protected $primaryKey = 'nip';
 
     

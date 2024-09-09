@@ -15,6 +15,7 @@ use DataTables;
 use Carbon\Carbon;
 
 use App\Models\Kerusakan;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InventarisController extends Controller
 {
@@ -29,18 +30,23 @@ class InventarisController extends Controller
 
             $lokasi_id = $request->lokasi_id;
             $kategori_id = $request->kategori_id;
+            $tahun = $request->tahun;
             
             $kerusakan = Kerusakan::where('status', '!=', 'selesai')->get()->pluck('barang_id');
 
-            $data = Barang::select('barang.*')->with(['kategori', 'lokasi'])
+            $data = Barang::select('barangs.*')->with(['kategori', 'lokasi'])
             ->when(isset($lokasi_id), function ($q) use ($lokasi_id) {
                 return $q->where('lokasi_id', $lokasi_id);
             })
             ->when(isset($kategori_id), function ($q) use ($kategori_id) {
                 return $q->where('kategori_id', $kategori_id);
             })
+            ->when(isset($tahun), function ($q) use ($tahun) {
+                return $q->where('tahun', $tahun);
+            })
             ->whereNotIn('id', $kerusakan)
-            ->latest()->get();
+            ->orderBy('tahun', 'DESC')
+            ->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -70,11 +76,13 @@ class InventarisController extends Controller
                 ->make(true);
         }
         
+        $tahun = Barang::orderBy('tahun', 'ASC')->pluck('tahun')->unique(); // Ambil tahun unik
         $kategori = Kategori::orderBy('nama', 'ASC')->get();
         $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
         return view('barang.index',[
             'kategori' => $kategori,
             'lokasi' => $lokasi,
+            'tahun' => $tahun,
         ]);
     }
 
@@ -108,49 +116,69 @@ class InventarisController extends Controller
             'lokasi_id' => 'required',
             'kategori_id' => 'required',
             'nama' => 'required',
+            'tahun' => 'required',
         ];
 
         $pesan = [
             'lokasi_id.required' => 'Lokasi Wajib Diisi!',
             'kategori_id.required' => 'Kategori Wajib Diisi!',
             'nama.required' => 'Nama Barang Wajib Diisi!',
+            'tahun.required' => 'Tahun Barang Wajib Diisi!',
         ];
 
-
         $validator = Validator::make($request->all(), $rules, $pesan);
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return back()->withInput()->withErrors($validator->errors());
-        }else{
+        } else {
             DB::beginTransaction();
-            try{
-                $nomor = '19.11.';
+            try {
+                // Ambil kode lokasi dan kode kategori
+                $lokasi = Lokasi::where('id', $request->lokasi_id)->first();
                 $kategori = Kategori::where('id', $request->kategori_id)->first();
-                $nomor .= $kategori->kode;
                 
-                $q = Barang::select(DB::raw('MAX(RIGHT(nomor,2)) AS kd_max'));
-                $no = 1;
-                if($q->count() > 0){
-                    foreach($q->get() as $k){
-                        $nomor .= '.'.sprintf("%02s", abs(((int)$k->kd_max) + 1));
+                // Kode lokasi dan kode kategori
+                $kode_lokasi = $lokasi->kode;
+                $kode_kategori = $kategori->kode;
+                
+                // Tahun saat ini
+                $tahun = $request->tahun;
+                
+                // Inisialisasi nomor urut default
+                $nomor_urut = 1;
+                
+                // Ambil nomor urut terakhir dari database
+                $q = Barang::whereYear('created_at', $tahun)
+                            ->select(DB::raw('MAX(RIGHT(nomor, 3)) AS kd_max'));
+                
+                if ($q->count() > 0) {
+                    foreach ($q->get() as $k) {
+                        // Menentukan nomor urut berikutnya
+                        $nomor_urut = (int)$k->kd_max + 1;
                     }
-                }else{
-                    $nomor .= '.'. sprintf("%02s", $no);
                 }
-
+                
+                // Format nomor urut menjadi 3 digit
+                $nomor_urut_terformat = sprintf("%03s", $nomor_urut);
+                
+                // Gabungkan semua bagian
+                $nomor = "{$kode_lokasi}.{$kode_kategori}.{$tahun}.{$nomor_urut_terformat}";
+        
+                // Simpan data barang
                 $data = new Barang();
                 $data->nomor = $nomor;
+                $data->tahun = $request->tahun;
                 $data->nama = $request->nama;
                 $data->kategori_id = $request->kategori_id;
                 $data->lokasi_id = $request->lokasi_id;
                 $data->deskripsi = $request->deskripsi;
                 $data->save();
-
-            }catch(\QueryException $e){
+                
+            } catch (\QueryException $e) {
                 DB::rollback();
-                // return back()->withInput()->withErrors($e);
+                // Tangani kesalahan jika terjadi
                 dd($e);
             }
-
+        
             DB::commit();
             return redirect()->route('inventaris.index');
         }
@@ -203,12 +231,14 @@ class InventarisController extends Controller
             'lokasi_id' => 'required',
             'kategori_id' => 'required',
             'nama' => 'required',
+            'tahun' => 'required',
         ];
 
         $pesan = [
             'lokasi_id.required' => 'Lokasi Wajib Diisi!',
             'kategori_id.required' => 'Kategori Wajib Diisi!',
             'nama.required' => 'Nama Barang Wajib Diisi!',
+            'tahun.required' => 'Tahun Barang Wajib Diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $pesan);
@@ -220,6 +250,7 @@ class InventarisController extends Controller
 
                 $data = Barang::where('id', $id)->first();
                 $data->nama = $request->nama;
+                $data->tahun = $request->tahun;
                 $data->kategori_id = $request->kategori_id;
                 $data->lokasi_id = $request->lokasi_id;
                 $data->deskripsi = $request->deskripsi;
@@ -265,24 +296,68 @@ class InventarisController extends Controller
         ]);
     }
 
-    public function select(Request $request){
-        $lokasi_id = $request->id;
-        $kategori_id = $request->kategori;
-        $search = $request->search;
+    public function select(Request $request)
+{
+    $lokasi_id = $request->id;
+    $kategori_id = $request->kategori;
+    $search = $request->search;
+    $tahun = $request->tahun; // Tambahkan parameter tahun
 
-        $data = Barang::select('id', DB::raw('CONCAT(nomor," : ",nama) as text'))
+    $data = Barang::select('id', DB::raw('CONCAT(nomor, " : ", nama) as text'))
         ->when(isset($lokasi_id), function ($q) use ($lokasi_id) {
             return $q->where('lokasi_id', $lokasi_id);
         })
         ->when(isset($kategori_id), function ($q) use ($kategori_id) {
             return $q->where('kategori_id', $kategori_id);
         })
+        ->when(isset($tahun), function ($q) use ($tahun) {
+            // Asumsikan bahwa tahun disimpan di kolom 'created_at'
+            return $q->where('tahun', $tahun);
+        })
         ->when(isset($search), function ($q) use ($search) {
             return $q->where('nama', 'LIKE', '%'.$search.'%');
         })
-        ->latest()->get();
+        ->latest()
+        ->get();
+
+    return response()->json($data);
+}
 
 
-        return json_encode($data);
-    }
+public function export(Request $request)
+{
+    $lokasiId = $request->lokasi_id;
+    $kategoriId = $request->kategori_id; 
+    $tahun = $request->tahun; 
+    $status = $request->status;
+    $tgl = $request->tgl;
+
+    // Ambil data berdasarkan filter
+    $data = Barang::select('nomor', 'nama', 'kategori_id', 'lokasi_id', 'tahun')
+        ->with(['kategori', 'lokasi']) // Pastikan relasi sudah ada di model Barang
+        ->when($lokasiId, function ($query) use ($lokasiId) {
+            return $query->where('lokasi_id', $lokasiId);
+        })
+        ->when($kategoriId, function ($query) use ($kategoriId) {
+            return $query->where('kategori_id', $kategoriId);
+        })
+        ->when($tahun, function ($query) use ($tahun) {
+            return $query->where('tahun', $tahun);
+        })
+        ->when($status, function ($query) use ($status) {
+            return $query->where('status', $status);
+        })
+        ->when($tgl, function ($query) use ($tgl) {
+            return $query->whereDate('created_at', $tgl);
+        })
+        ->get();
+
+    // Format data untuk view PDF
+    $pdf = Pdf::loadView('barang.export', [
+        'data' => $data,
+        'tgl' => $tgl
+    ]);
+
+    return $pdf->stream('Laporan Inventaris.pdf');
+}
 }
