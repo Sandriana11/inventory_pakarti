@@ -347,15 +347,13 @@ public function export(Request $request)
         ->when($status, function ($query) use ($status) {
             return $query->where('status', $status);
         })
-        // ->when($tgl, function ($query) use ($tgl) {
-        //     return $query->whereDate('created_at', $tgl);
-        // })
         ->get();
 
     // Format data untuk view PDF
     $pdf = Pdf::loadView('barang.export', [
         'data' => $data,
-        'tgl' => $tgl
+        'tgl' => $tgl,
+        'status' => $status
     ]);
 
     return $pdf->stream('Laporan Inventaris.pdf');

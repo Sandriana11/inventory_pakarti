@@ -73,7 +73,15 @@
         </table>
         <hr />
         <h2 class="text-center" style="font-weight: bold; margin-top: 10px;">LAPORAN INVENTARIS</h2>
-        <h2 class="text-center" style="font-weight: bold; margin-top: 0;">
+        @if ($status === 'rusak')
+        <h2 class="text-center" style="font-weight: bold;">BARANG RUSAK</h2>
+        @elseif ($status === 'diperbaiki')
+        <h2 class="text-center" style="font-weight: bold;">BARANG DIPERBAIKI</h2>
+        @elseif($status === 'tersedia')
+        <h2 class="text-center" style="font-weight: bold;">BARANG TERSEDIA</h2>
+        @endif
+
+        <h2 class="text-center" style="font-weight: bold; margin-top: 10; margin-bottom: 10;">
             Tanggal: {{ \Carbon\Carbon::parse($tgl)->translatedFormat('d F Y') }}
         </h2>
         <table class="table table-bordered w-100">
