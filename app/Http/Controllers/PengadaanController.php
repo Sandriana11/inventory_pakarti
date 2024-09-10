@@ -258,62 +258,60 @@ class PengadaanController extends Controller
         ]);
     }
 
-    
     public function confirm($id, Request $request)
     {
         DB::beginTransaction();
-        try{
 
-            $data = Pengadaan::where('id', $id)->first();
-            $data->status = $request->status;
+        try {
+            // Ambil data pengadaan berdasarkan ID
+            $data = Pengadaan::findOrFail($id);
 
-            if($request->status == 'setuju'){
-                for($i = 1; $i <= $data->qty; $i++){
-                    $nomor = '19.11.';
-                    $kategori = Kategori::where('id', $data->kategori_id)->first();
-                    $nomor .= $kategori->kode;
-                    
-                    $q = Barang::select(DB::raw('MAX(RIGHT(nomor,2)) AS kd_max'));
-                    $no = 1;
-                    
-                    if($q->count() > 0){
-                        foreach($q->get() as $k){
-                            $nomor .= '.'.sprintf("%02s", abs(((int)$k->kd_max) + 1));
-                        }
-                    }else{
-                        $nomor .= '.'. sprintf("%02s", $no);
-                    }
+            // Ubah status berdasarkan input
+            $data->status = $request->input('status');
 
-                    $brg = new Barang();
-                    $brg->nomor = $nomor;
-                    $brg->nama = $data->nama;
-                    $brg->kategori_id = $data->kategori_id;
-                    $brg->lokasi_id = $data->lokasi_id;
-                    $brg->deskripsi = $data->deskripsi;
-                    $brg->save();
+            if ($request->status == 'setuju') {
+                for ($i = 1; $i <= $data->qty; $i++) {
+                    // Cari Lokasi dan Kategori berdasarkan ID
+                    $lokasi = Lokasi::findOrFail($data->lokasi_id);
+                    $kategori = Kategori::findOrFail($data->kategori_id);
+
+                    // Buat nomor baru
+                    $kode_lokasi = $lokasi->kode;
+                    $kode_kategori = $kategori->kode;
+                    $tahun = Carbon::parse($data->tgl)->year;
+                    $nomor_urut = Barang::whereYear('created_at', $tahun)
+                                        ->max(DB::raw('RIGHT(nomor, 3)')) + 1;
+
+                    $nomor_urut_terformat = sprintf("%03s", $nomor_urut);
+                    $nomor = "{$kode_lokasi}.{$kode_kategori}.{$tahun}.{$nomor_urut_terformat}";
+
+                    // Simpan data barang baru
+                    Barang::create([
+                        'nomor' => $nomor,
+                        'nama' => $data->nama,
+                        'tahun' => $tahun,
+                        'kategori_id' => $data->kategori_id,
+                        'lokasi_id' => $data->lokasi_id,
+                        'deskripsi' => $data->deskripsi,
+                    ]);
                 }
             }
+
+            // Simpan perubahan status data pengadaan
             $data->save();
+            DB::commit();
 
-        }catch(\QueryException $e){
+            // Tambahkan flash message sukses
+            return redirect()->back()->with('success', 'Status berhasil diperbarui!');
+
+        } catch (\Exception $e) {
             DB::rollback();
-            return response()->json([
-                'fail' => true,
-                'errors' => $e,
-                'pesan' => 'Gagal Mengubah Status Perbaikan!',
-            ]);
+            // Tambahkan flash message error
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        DB::commit();
-        return response()->json([
-            'fail' => false,
-            'pesan' => 'Status Perbaikan Berhasil Diperbaharui!',
-        ]);
     }
 
 
-    
-    
     private function getNumber()
     {
         $q = Pengadaan::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));

@@ -347,9 +347,9 @@ public function export(Request $request)
         ->when($status, function ($query) use ($status) {
             return $query->where('status', $status);
         })
-        ->when($tgl, function ($query) use ($tgl) {
-            return $query->whereDate('created_at', $tgl);
-        })
+        // ->when($tgl, function ($query) use ($tgl) {
+        //     return $query->whereDate('created_at', $tgl);
+        // })
         ->get();
 
     // Format data untuk view PDF

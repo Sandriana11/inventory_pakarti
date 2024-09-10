@@ -51,6 +51,7 @@
         <script src="/js/plugins/datatables-buttons-pdfmake/vfs_fonts.js"></script>
         <script src="/js/plugins/datatables-buttons/buttons.print.min.js"></script>
         <script src="/js/plugins/datatables-buttons/buttons.html5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script type="text/javascript">
             $.ajaxSetup({
                 headers: {
