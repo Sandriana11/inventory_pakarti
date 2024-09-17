@@ -72,6 +72,7 @@
                             <th width="60px">No</th>
                             <th>No Inventaris</th>
                             <th>Nama Barang</th>
+                            <th>Deskripsi</th>
                             <th>Kategori</th>
                             <th>Lokasi</th>
                             <th>Tahun</th>
@@ -218,6 +219,7 @@
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'nomor', name: 'nomor'},
             {data: 'nama', name: 'nama'},
+            {data: 'deskripsi', name: 'deskripsi'},
             {data: 'kategori.nama', name: 'kategori.nama'},
             {data: 'lokasi.nama', name: 'lokasi.nama'},
             {data: 'tahun', name: 'tahun'},
