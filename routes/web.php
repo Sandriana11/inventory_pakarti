@@ -119,17 +119,6 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}/delete','BidangController@destroy')->name('delete');
         });
 
-        Route::prefix('/pengadaan')->name('pengadaan.')->group(function () {
-            Route::get('/','PengadaanController@index')->name('index');
-            Route::get('/create','PengadaanController@create')->name('create');
-            Route::post('/store','PengadaanController@store')->name('store');
-            Route::get('/{id}','PengadaanController@show')->name('show');
-            Route::get('/{id}/edit','PengadaanController@edit')->name('edit');
-            Route::post('{id}/update','PengadaanController@update')->name('update');
-            Route::post('{id}/confirm','PengadaanController@confirm')->name('confirm');
-            Route::delete('/{id}/delete','PengadaanController@destroy')->name('delete');
-        });
-
         Route::prefix('/pegawai')->name('pegawai.')->group(function () {
             Route::get('/','PegawaiController@index')->name('index');
             Route::get('/data','PegawaiController@data')->name('data');

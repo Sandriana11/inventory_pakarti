@@ -34,12 +34,6 @@
                         <span class="nav-main-link-name">Perbaikan</span>
                     </a>
                 </li>
-                <li class="nav-main-item">
-                    <a class="nav-main-link {{ request()->is('pengadaan', 'pengadaan/*') ? ' active' : '' }}" href="{{ route('pengadaan.index') }}">
-                        <i class="nav-main-link-icon fa fa-cart-plus"></i>
-                        <span class="nav-main-link-name">Pengadaan</span>
-                    </a>
-                </li>
             </ul>
             <!-- END Header Navigation -->
         </div>
