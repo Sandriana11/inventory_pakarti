@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('nama');
             $table->foreignId('kategori_id')->constrained()->onDelete('cascade');
             $table->foreignId('lokasi_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->text('deskripsi');
             $table->enum('status', ['tersedia', 'diperbaiki', 'rusak']);
             $table->timestamps();

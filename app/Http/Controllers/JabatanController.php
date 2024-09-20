@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bidang;
+use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use DataTables;
 
-class BidangController extends Controller
+class JabatanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class BidangController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Bidang::select('bidangs.*')->withCount('pegawai')->latest()->get();
+            $data = Jabatan::select('jabatans.*')->withCount('pegawai')->orderBy('kode', 'ASC')->latest()->get();
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
@@ -28,7 +28,7 @@ class BidangController extends Controller
                             Aksi
                         </button>
                         <div class="dropdown-menu fs-sm" aria-labelledby="dropdown-default-outline-primary" style="">';
-                        $btn .= '<a class="dropdown-item" href="'. route('bidang.edit', $row->id).'"><i class="si si-note me-1"></i>Ubah</a>';
+                        $btn .= '<a class="dropdown-item" href="'. route('jabatan.edit', $row->id).'"><i class="si si-note me-1"></i>Ubah</a>';
                         $btn .= '<a class="dropdown-item" href="javascript:void(0)" onclick="hapus('. $row->id.')"><i class="si si-trash me-1"></i>Hapus</a>';
                     $btn .= '</div></div>';
                     return $btn;
@@ -39,7 +39,7 @@ class BidangController extends Controller
                 ->rawColumns(['action']) 
                 ->make(true);
         }
-        return view('bidang.index');
+        return view('jabatan.index');
     }
 
     /**
@@ -56,7 +56,7 @@ class BidangController extends Controller
         ];
 
         $pesan = [
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
+            'nama.required' => 'Nama Jabatan Wajib Diisi!',
             'kode.required' => 'Kode Wajib Diisi!',
         ];
 
@@ -68,7 +68,7 @@ class BidangController extends Controller
             DB::beginTransaction();
             try{
 
-                $data = new Bidang();
+                $data = new Jabatan();
                 $data->nama = $request->nama;
                 $data->kode = $request->kode;
                 $data->save();
@@ -79,7 +79,7 @@ class BidangController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('bidang.index');
+            return redirect()->route('jabatan.index');
         }
     }
 
@@ -91,9 +91,9 @@ class BidangController extends Controller
      */
     public function edit($id)
     {
-        $data = Bidang::where('id', $id)->first();
+        $data = Jabatan::where('id', $id)->first();
 
-        return view('bidang.edit',[
+        return view('jabatan.edit',[
             'data' => $data
         ]);
     }
@@ -113,7 +113,7 @@ class BidangController extends Controller
         ];
 
         $pesan = [
-            'nama.required' => 'Nama Lengkap Wajib Diisi!',
+            'nama.required' => 'Nama Jabatan Wajib Diisi!',
             'kode.required' => 'Kode Wajib Diisi!',
         ];
 
@@ -125,7 +125,7 @@ class BidangController extends Controller
             DB::beginTransaction();
             try{
 
-                $data = Bidang::where('id', $id)->first();
+                $data = Jabatan::where('id', $id)->first();
                 $data->nama = $request->nama;
                 $data->kode = $request->kode;
                 $data->save();
@@ -136,7 +136,7 @@ class BidangController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('bidang.index');
+            return redirect()->route('jabatan.index');
         }
     }
 
@@ -151,7 +151,7 @@ class BidangController extends Controller
         DB::beginTransaction();
         try{
 
-            $data = Bidang::where('id', $id)->first();
+            $data = Jabatan::where('id', $id)->first();
             $data->delete();
 
         }catch(\QueryException $e){

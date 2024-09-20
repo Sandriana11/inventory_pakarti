@@ -15,6 +15,7 @@ use DataTables;
 use Carbon\Carbon;
 
 use App\Models\Kerusakan;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class InventarisController extends Controller
@@ -34,7 +35,7 @@ class InventarisController extends Controller
             
             $kerusakan = Kerusakan::where('status', '!=', 'selesai')->get()->pluck('barang_id');
 
-            $data = Barang::select('barangs.*')->with(['kategori', 'lokasi'])
+            $data = Barang::select('barangs.*')->with(['kategori', 'lokasi', 'user'])
             ->when(isset($lokasi_id), function ($q) use ($lokasi_id) {
                 return $q->where('lokasi_id', $lokasi_id);
             })
@@ -49,6 +50,9 @@ class InventarisController extends Controller
             ->get();
             return Datatables::of($data)
                 ->addIndexColumn()
+                ->addColumn('user', function($row) {
+                    return $row->user->name . ' - ' . $row->user->jabatan->nama; // Menampilkan nama user dan jabatan
+                })
                 ->addColumn('action', function($row){
                     $btn = '<div class="dropdown">
                         <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" id="dropdown-default-outline-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -95,12 +99,12 @@ class InventarisController extends Controller
     {
         $kategori = Kategori::orderBy('nama', 'ASC')->get();
         $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
-        $bidang = Bidang::orderBy('nama', 'ASC')->get();
+        $user = User::orderBy('name', 'ASC')->get();
 
         return view('barang.form',[
             'kategori' => $kategori,
             'lokasi' => $lokasi,
-            'bidang' => $bidang
+            'user' => $user
         ]);
     }
 
@@ -112,17 +116,20 @@ class InventarisController extends Controller
      */
     public function store(Request $request)
     {
+
         $rules = [
-            'lokasi_id' => 'required',
-            'kategori_id' => 'required',
             'nama' => 'required',
+            'kategori_id' => 'required',
+            'lokasi_id' => 'required',
+            'user_id' => 'required',
             'tahun' => 'required',
         ];
 
         $pesan = [
+            'nama.required' => 'Nama Barang Wajib Diisi!',
             'lokasi_id.required' => 'Lokasi Wajib Diisi!',
             'kategori_id.required' => 'Kategori Wajib Diisi!',
-            'nama.required' => 'Nama Barang Wajib Diisi!',
+            'user_id.required' => 'Penanggung Jawab Wajib Diisi!',
             'tahun.required' => 'Tahun Barang Wajib Diisi!',
         ];
 
@@ -170,6 +177,7 @@ class InventarisController extends Controller
                 $data->nama = $request->nama;
                 $data->kategori_id = $request->kategori_id;
                 $data->lokasi_id = $request->lokasi_id;
+                $data->user_id = $request->user_id;
                 $data->deskripsi = $request->deskripsi;
                 $data->save();
                 
@@ -208,13 +216,13 @@ class InventarisController extends Controller
         $data = Barang::where('id', $id)->first();
         $kategori = Kategori::orderBy('nama', 'ASC')->get();
         $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
-        $bidang = Bidang::orderBy('nama', 'ASC')->get();
+        $user = User::orderBy('name', 'ASC')->get();
 
         return view('barang.edit',[
             'data' => $data,
             'kategori' => $kategori,
             'lokasi' => $lokasi,
-            'bidang' => $bidang
+            'user' => $user
         ]);
     }
 
@@ -253,6 +261,7 @@ class InventarisController extends Controller
                 $data->tahun = $request->tahun;
                 $data->kategori_id = $request->kategori_id;
                 $data->lokasi_id = $request->lokasi_id;
+                $data->user_id = $request->user_id;
                 $data->deskripsi = $request->deskripsi;
                 $data->save();
 
@@ -333,8 +342,8 @@ public function export(Request $request)
     $tgl = $request->tgl;
 
     // Ambil data berdasarkan filter
-    $data = Barang::select('nomor', 'nama', 'kategori_id', 'lokasi_id', 'tahun')
-        ->with(['kategori', 'lokasi']) // Pastikan relasi sudah ada di model Barang
+    $data = Barang::select('nomor', 'nama', 'deskripsi', 'kategori_id', 'lokasi_id', 'tahun', 'user_id')
+        ->with(['kategori', 'lokasi', 'user.jabatan']) // Pastikan relasi sudah ada di model Barang
         ->when($lokasiId, function ($query) use ($lokasiId) {
             return $query->where('lokasi_id', $lokasiId);
         })
@@ -348,7 +357,7 @@ public function export(Request $request)
             return $query->where('status', $status);
         })
         ->get();
-
+        
     // Format data untuk view PDF
     $pdf = Pdf::loadView('barang.export', [
         'data' => $data,

@@ -1,11 +1,11 @@
 <x-app-layout>
     <div class="content">
         <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Ubah Bidang</span>
+            <span>Ubah Jabatan</span>
         </div>
         <div class="block block-rounded">
             <div class="block-content">
-                <form action="{{ route('bidang.update', $data->id) }}" method="post">
+                <form action="{{ route('jabatan.update', $data->id) }}" method="post">
                     @csrf
                     <div class="mb-4">
                         <label class="form-label" for="val-nama">Nama

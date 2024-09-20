@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 
 
-class Bidang extends Model
+class Jabatan extends Model
 
 {
 
@@ -20,7 +20,7 @@ class Bidang extends Model
 
     
 
-    protected $table = 'bidangs';
+    protected $table = 'jabatans';
 
     protected $primaryKey = 'id';
 
@@ -40,7 +40,7 @@ class Bidang extends Model
 
     public function pegawai(){
 
-        return $this->hasOne(User::class, 'bidang_id');
+        return $this->hasOne(User::class, 'jabatan_id');
 
     }
 

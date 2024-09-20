@@ -145,11 +145,11 @@
 
                     <li class="nav-main-item">
 
-                        <a class="nav-main-link {{ request()->is('bidang', 'bidang/*') ? ' active' : '' }}" href="{{ route('bidang.index') }}">
+                        <a class="nav-main-link {{ request()->is('jabatan', 'jabatan/*') ? ' active' : '' }}" href="{{ route('jabatan.index') }}">
 
                             <i class="nav-main-link-icon fa fa-archive"></i>
 
-                            <span class="nav-main-link-name">Bidang</span>
+                            <span class="nav-main-link-name">Jabatan</span>
 
                         </a>
 

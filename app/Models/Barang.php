@@ -13,7 +13,7 @@ class Barang extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'nama', 'tahun', 'nomor', 'kategori_id', 'lokasi_id', 'deskripsi'
+        'id', 'nama', 'tahun', 'nomor', 'kategori_id', 'lokasi_id', 'deskripsi', 'user_id'
     ];
 
     
@@ -25,7 +25,7 @@ class Barang extends Model
         return $this->belongsTo(Lokasi::class, 'lokasi_id');
     }
     
-    public function bidang(){
-        return $this->belongsTo(Bidang::class, 'bidang_id');
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

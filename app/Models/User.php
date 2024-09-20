@@ -43,7 +43,13 @@ class User extends Authenticatable
     ];
 
     
-    public function bidang(){
-        return $this->belongsTo(Bidang::class, 'bidang_id');
+    public function jabatan(){
+        return $this->belongsTo(Jabatan::class, 'jabatan_id');
+    }
+    public function lokasi(){
+        return $this->belongsTo(Lokasi::class, 'lokasi_id');
+    }
+    public function barang(){
+        return $this->belongsTo(Barang::class, 'user_id');
     }
 }

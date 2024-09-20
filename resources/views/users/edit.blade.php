@@ -41,21 +41,34 @@
                         <label class="col-sm-3 col-form-label" for="field-email">Email</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                                id="field-email" name="email" placeholder="Masukan email" value="{{ old('email', $data->username) }}">
+                                id="field-email" name="email" placeholder="Masukan email" value="{{ old('email', $data->email) }}">
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
                     </div>
                     <div class="row mb-4">
-                        <label class="col-sm-3 col-form-label" for="field-bidang_id">Bidang</label>
+                        <label class="col-sm-3 col-form-label" for="field-jabatan_id">Jabatan</label>
                         <div class="col-sm-6">
-                            <select class="form-select  {{ $errors->has('bidang_id') ? 'is-invalid' : '' }}" id="field-bidang_id"
-                                style="width: 100%;" name="bidang_id" data-placeholder="Pilih Bidang">
+                            <select class="form-select  {{ $errors->has('jabatan_id') ? 'is-invalid' : '' }}" id="field-jabatan_id"
+                                style="width: 100%;" name="jabatan_id" data-placeholder="Pilih Jabatan">
                                 <option></option>
-                                @foreach ($bidang as $p)
-                                <option value="{{ $p->id }}" {{ (old('bidang_id', $data->bidang_id) == $p->id) ? 'selected="selected"' : '' }}>{{ $p->nama }}</option>
+                                @foreach ($jabatan as $p)
+                                <option value="{{ $p->id }}" {{ (old('jabatan_id', $data->jabatan_id) == $p->id) ? 'selected="selected"' : '' }}>{{ $p->nama }}</option>
                                 @endforeach
                             </select>
-                            <x-input-error :messages="$errors->get('bidang_id')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('jabatan_id')" class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <label class="col-sm-3 col-form-label" for="field-lokasi_id">Departemen</label>
+                        <div class="col-sm-6">
+                            <select class="form-select  {{ $errors->has('lokasi_id') ? 'is-invalid' : '' }}" id="field-lokasi_id"
+                                style="width: 100%;" name="lokasi_id" data-placeholder="Pilih Departemen">
+                                <option></option>
+                                @foreach ($lokasi as $p)
+                                <option value="{{ $p->id }}" {{ (old('lokasi_id', $data->lokasi_id) == $p->id) ? 'selected="selected"' : '' }}>{{ $p->nama }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('lokasi_id')" class="mt-2" />
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -102,7 +115,7 @@
     <script src="/js/plugins/select2/js/select2.full.min.js"></script>
     <script>
         // $(document).ready(function() {
-            $('#field-bidang').select2();
+            $('#field-jabatan').select2();
         // });
     </script>
     @endpush

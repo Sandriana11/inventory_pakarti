@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('pegawais', function (Blueprint $table) {
             $table->char('nip',15);
             $table->string('nama');
-            $table->string('bidang');
-            $table->foreignId('bidang_id')->constrained()->onDelete('cascade');
+            $table->foreignId('lokasi_id')->constrained()->onDelete('cascade');
+            $table->foreignId('jabatan_id')->constrained()->onDelete('cascade');
             $table->char('hp',16);
             $table->timestamps();
         });

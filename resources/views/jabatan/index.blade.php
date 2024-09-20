@@ -1,13 +1,13 @@
 <x-app-layout>
     <div class="content">
         <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Data Bidang</span>
+            <span>Data Jabatan</span>
         </div>
         <div class="row">
             <div class="col-4">
                 <div class="block block-rounded">
                     <div class="block-content p-3">
-                        <form action="{{ route('bidang.store') }}" method="post">
+                        <form action="{{ route('jabatan.store') }}" method="post">
                             @csrf
                             <div class="mb-4">
                                 <label class="form-label" for="val-nama">Nama
@@ -58,7 +58,7 @@
                 processing: true,
                 serverSide: true,
                 dom : "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                ajax: "{{ route('bidang.index') }}",
+                ajax: "{{ route('jabatan.index') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'nama', name: 'nama'},
@@ -83,7 +83,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/bidang/"+id+"/delete",
+                        url: "/jabatan/"+id+"/delete",
                         type: "DELETE",
                         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         success: function(data) {

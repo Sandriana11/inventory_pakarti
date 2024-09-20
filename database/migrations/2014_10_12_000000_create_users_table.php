@@ -23,9 +23,10 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->foreignId('jabatan_id')->constrained()->onDelete('cascade'); 
             $table->enum('level', ['admin', 'pegawai', 'eksekutor']);
             $table->string('hp', 20)->nullable();
-            $table->foreignId('bidang_id')->constrained()->onDelete('cascade');
+            $table->foreignId('lokasi_id')->constrained()->onDelete('cascade');
             $table->text('alamat')->nullable();
         });
     }

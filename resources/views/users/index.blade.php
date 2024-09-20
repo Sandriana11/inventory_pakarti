@@ -14,13 +14,13 @@
                 <div class="row">
                     <div class="col-4">
                         <div class="mb-4">
-                            <label for="field-bidang_id">Filter Bidang</label>
-                            <select class="form-select  {{ $errors->has('bidang_id') ? 'is-invalid' : '' }}"
-                                id="field-bidang_id" style="width: 100%;" name="bidang_id"
-                                data-placeholder="Pilih Bidang">
+                            <label for="field-lokasi_id">Filter Lokasi</label>
+                            <select class="form-select  {{ $errors->has('lokasi_id') ? 'is-invalid' : '' }}"
+                                id="field-lokasi_id" style="width: 100%;" name="lokasi_id"
+                                data-placeholder="Pilih lokasi">
                                 <option></option>
-                                @foreach ($bidang as $p)
-                                <option value="{{ $p->id }}"  {{ (old('bidang_id') == $p->id) ? 'selected="selected"' : '' }}>{{ $p->nama }}</option>
+                                @foreach ($lokasi as $p)
+                                <option value="{{ $p->id }}"  {{ (old('lokasi_id') == $p->id) ? 'selected="selected"' : '' }}>{{ $p->nama }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -33,7 +33,8 @@
                             <th>NIP</th>
                             <th>Nama Lengkap</th>
                             <th>Username</th>
-                            <th>Bidang</th>
+                            <th>Jabatan</th>
+                            <th>Departemen</th>
                             <th width="60px">Aksi</th>
                         </tr>
                     </thead>
@@ -46,11 +47,11 @@
     
     @push('scripts')
         <script> 
-            $('#field-bidang_id').select2({
+            $('#field-lokasi_id').select2({
                 allowClear : true,
             });
 
-            $("#field-bidang_id").on("change", function(){
+            $("#field-lokasi_id").on("change", function(){
                 var val = $(this).val();
                 table.draw();
             });
@@ -62,7 +63,7 @@
                 ajax: {
                     url : "{{ route('user.index') }}",
                     data : function(data){
-                        data.bidang_id = $('#field-bidang_id').val();
+                        data.lokasi_id = $('#field-lokasi_id').val();
                     }
                 },
                 columns: [
@@ -70,7 +71,8 @@
                     {data: 'nip', name: 'nip'},
                     {data: 'name', name: 'name'},
                     {data: 'username', name: 'username'},
-                    {data: 'bidang.nama', name: 'bidang.nama'},
+                    {data: 'jabatan.nama', name: 'jabatan.nama'},
+                    {data: 'lokasi.nama', name: 'lokasi.nama'},
                     {
                         data: 'action', 
                         name: 'action', 

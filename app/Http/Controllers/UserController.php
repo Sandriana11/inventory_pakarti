@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\DataTables\UsersDataTable;
-use App\Models\Bidang;
+use App\Models\Jabatan;
+use App\Models\Lokasi;
+use App\Models\Pegawai;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -22,12 +24,12 @@ class UserController extends Controller
     {
         if ($request->ajax()) {
 
-            $bidang_id = $request->bidang_id;
+            $lokasi_id = $request->lokasi_id;
             $data = User::select('users.*')
-            ->when(isset($bidang_id), function ($q) use ($bidang_id) {
-                return $q->where('bidang_id', $bidang_id);
+            ->when(isset($lokasi_id), function ($q) use ($lokasi_id) {
+                return $q->where('lokasi_id', $lokasi_id);
             })
-            ->with(['bidang'])->latest()->get();
+            ->with(['jabatan', 'lokasi'])->latest()->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -48,9 +50,9 @@ class UserController extends Controller
                 ->rawColumns(['action']) 
                 ->make(true);
         }
-        $bidang = Bidang::orderBy('nama', 'ASC')->get();
+        $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
         return view('users.index',[
-            'bidang' => $bidang
+            'lokasi' => $lokasi
         ]);
     }
 
@@ -62,10 +64,12 @@ class UserController extends Controller
     public function create()
     {
         $user = User::latest()->get()->pluck('nip');
-        $bidang = Bidang::orderBy('nama', 'ASC')->get();
+        $jabatan = Jabatan::orderBy('nama', 'ASC')->get();
+        $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
 
         return view('users.form',[
-            'bidang' => $bidang
+            'jabatan' => $jabatan,
+            'lokasi' => $lokasi
         ]);
     }
 
@@ -76,66 +80,69 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-{
-    $rules = [
-        'nip' => 'required|numeric|max_digits:18|unique:users,nip',
-        'nama' => 'required|string',
-        'bidang_id' => 'required',
-        'username' => 'required|unique:users,username',
-        'email' => 'required|email|unique:users,email', // Menambahkan aturan validasi email
-        'password' => 'required|same:password_confirmation',
-        'password_confirmation' => 'required',
-        'level' => 'required'
-    ];
+    {
+        $rules = [
+            'nip' => 'required|numeric|max_digits:18|unique:users,nip',
+            'nama' => 'required|string',
+            'jabatan_id' => 'required',
+            'lokasi_id' => 'required',
+            'username' => 'required|unique:users,username',
+            'email' => 'required|email|unique:users,email', // Menambahkan aturan validasi email
+            'password' => 'required|same:password_confirmation',
+            'password_confirmation' => 'required',
+            'level' => 'required'
+        ];
 
-    $pesan = [
-        'nip.required' => 'NIP Wajib Diisi!',
-        'nip.numeric' => 'NIP Hanya Boleh Angka!',
-        'nip.unique' => 'NIP Sudah Terdaftar!',
-        'nip.max_digits' => 'NIP Maksimal 18 Angka!',
-        'username.required' => 'Username Wajib Diisi!',
-        'username.unique' => 'Username Sudah Terdaftar!',
-        'nama.required' => 'Nama Lengkap Wajib Diisi!',
-        'bidang_id.required' => 'Bidang Wajib Diisi!',
-        'email.required' => 'Email Wajib Diisi!',
-        'email.email' => 'Format Email Tidak Valid!',
-        'email.unique' => 'Email Sudah Terdaftar!',
-        'password.required' => 'Password Wajib Diisi!',
-        'password.same' => 'Konfirmasi Password Tidak Sama!',
-        'password_confirmation.required' => 'Konfirmasi Password Wajib Diisi',
-        'level.required' => 'Level Wajib Diisi!',
-    ];
+        $pesan = [
+            'nip.required' => 'NIP Wajib Diisi!',
+            'nip.numeric' => 'NIP Hanya Boleh Angka!',
+            'nip.unique' => 'NIP Sudah Terdaftar!',
+            'nip.max_digits' => 'NIP Maksimal 18 Angka!',
+            'username.required' => 'Username Wajib Diisi!',
+            'username.unique' => 'Username Sudah Terdaftar!',
+            'nama.required' => 'Nama Lengkap Wajib Diisi!',
+            'jabatan_id.required' => 'Jabatan Wajib Diisi!',
+            'lokasi_id.required' => 'Departement Wajib Diisi!',
+            'email.required' => 'Email Wajib Diisi!',
+            'email.email' => 'Format Email Tidak Valid!',
+            'email.unique' => 'Email Sudah Terdaftar!',
+            'password.required' => 'Password Wajib Diisi!',
+            'password.same' => 'Konfirmasi Password Tidak Sama!',
+            'password_confirmation.required' => 'Konfirmasi Password Wajib Diisi',
+            'level.required' => 'Level Wajib Diisi!',
+        ];
 
-    $validator = Validator::make($request->all(), $rules, $pesan);
-    if ($validator->fails()){
-        return back()->withInput()->withErrors($validator->errors());
-    }else{
-        DB::beginTransaction();
-        try{
-            $data = new User();
-            $data->nip = $request->nip;
-            $data->name = $request->nama;
-            $data->username = $request->username;
-            $data->email = $request->email; // Menambahkan penyimpanan email
-            $data->bidang_id = $request->bidang_id;
-            $data->password = Hash::make($request->password);
-            $data->level = $request->level;
-            $data->save();
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return back()->withInput()->withErrors($validator->errors());
+        }else{
+            DB::beginTransaction();
+            try{
+                $data = new User();
+                $data->nip = $request->nip;
+                $data->name = $request->nama;
+                $data->username = $request->username;
+                $data->email = $request->email; 
+                $data->jabatan_id = $request->jabatan_id;
+                $data->lokasi_id = $request->lokasi_id;
+                $data->password = Hash::make($request->password);
+                $data->level = $request->level;
+                $data->save();
 
-        }catch(\QueryException $e){
-            DB::rollback();
-            return response()->json([
-                'fail' => true,
-                'errors' => $e,
-                'pesan' => 'Error Menyimpan Data Anggota',
-            ]);
+            }catch(\QueryException $e){
+                DB::rollback();
+                return response()->json([
+                    'fail' => true,
+                    'errors' => $e,
+                    'pesan' => 'Error Menyimpan Data Anggota',
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('user.index');
         }
-
-        DB::commit();
-
-        return redirect()->route('user.index');
     }
-}
 
 
     /**
@@ -158,11 +165,13 @@ class UserController extends Controller
     public function edit($id)
     {
         $data = User::where('id', $id)->first();
-        $bidang = Bidang::orderBy('nama', 'ASC')->get();
+        $jabatan = Jabatan::orderBy('nama', 'ASC')->get();
+        $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
 
         return view('users.edit',[
             'data' => $data,
-            'bidang' => $bidang
+            'jabatan' => $jabatan,
+            'lokasi' => $lokasi
         ]);
     }
 
@@ -175,59 +184,74 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
 {
+    // Aturan validasi
     $rules = [
-        'nip' => 'required',
+        'nip' => 'required|numeric|max_digits:18|unique:users,nip,' . $id, // Unik kecuali untuk user yang sedang diupdate
         'nama' => 'required|string',
-        'bidang' => 'required',
-        'hp' => 'required',
-        'email' => 'nullable|email|unique:users,email,' . $id, // Menambahkan aturan validasi email
+        'jabatan_id' => 'required',
+        'lokasi_id' => 'required',
+        'username' => 'required|unique:users,username,' . $id, // Unik kecuali untuk user yang sedang diupdate
+        'email' => 'required|email|unique:users,email,' . $id, // Menambahkan aturan validasi email, unik kecuali user yang sedang diupdate
+        'password' => 'nullable|same:password_confirmation', // Password bisa kosong jika tidak ingin diubah
+        'password_confirmation' => 'nullable',
+        'level' => 'required'
     ];
 
+    // Pesan error
     $pesan = [
         'nip.required' => 'NIP Wajib Diisi!',
-        'nip.exists' => 'NIP Sudah Terdaftar!',
+        'nip.numeric' => 'NIP Hanya Boleh Angka!',
+        'nip.unique' => 'NIP Sudah Terdaftar!',
+        'nip.max_digits' => 'NIP Maksimal 18 Angka!',
+        'username.required' => 'Username Wajib Diisi!',
+        'username.unique' => 'Username Sudah Terdaftar!',
         'nama.required' => 'Nama Lengkap Wajib Diisi!',
-        'bidang.required' => 'Bidang Wajib Diisi!',
-        'hp.required' => 'No Handphone Wajib Diisi!',
+        'jabatan_id.required' => 'Jabatan Wajib Diisi!',
+        'lokasi_id.required' => 'Departemen Wajib Diisi!',
+        'email.required' => 'Email Wajib Diisi!',
         'email.email' => 'Format Email Tidak Valid!',
         'email.unique' => 'Email Sudah Terdaftar!',
+        'password.same' => 'Konfirmasi Password Tidak Sama!',
+        'level.required' => 'Level Wajib Diisi!',
     ];
 
+    // Validasi input
     $validator = Validator::make($request->all(), $rules, $pesan);
-    if ($validator->fails()){
-        return back()->withErrors($validator->errors());
-    }else{
+    if ($validator->fails()) {
+        return back()->withInput()->withErrors($validator->errors());
+    } else {
         DB::beginTransaction();
-        try{
-            $data = Pegawai::where('nip', $id)->first();
+        try {
+            // Temukan user berdasarkan ID
+            $data = User::findOrFail($id);
             $data->nip = $request->nip;
-            $data->nama = $request->nama;
-            $data->bidang = $request->bidang;
-            $data->hp = $request->hp;
-            
-            if ($request->has('email')) {
-                $data->email = $request->email; // Menambahkan penyimpanan email jika ada
+            $data->name = $request->nama;
+            $data->username = $request->username;
+            $data->email = $request->email;
+            $data->jabatan_id = $request->jabatan_id;
+            $data->lokasi_id = $request->lokasi_id;
+            // Hanya update password jika diisi
+            if ($request->password) {
+                $data->password = Hash::make($request->password);
             }
-
+            $data->level = $request->level;
             $data->save();
 
-        }catch(\QueryException $e){
+        } catch (\QueryException $e) {
             DB::rollback();
             return response()->json([
                 'fail' => true,
                 'errors' => $e,
-                'pesan' => 'Error Menyimpan Data Anggota',
+                'pesan' => 'Error Memperbarui Data Pengguna',
             ]);
         }
 
         DB::commit();
-        if ($request->level_id > 2) {
-            return redirect()->route('user.dukungan.relawan');
-        }
 
-        return redirect()->route('pegawai.index');
+        return redirect()->route('user.index');
     }
 }
+
 
 
     /**
@@ -259,4 +283,14 @@ class UserController extends Controller
             'pesan' => 'Status Perbaikan Berhasil Diperbaharui!',
         ]);
     }
+
+    public function getUsersByLokasi($lokasi_id)
+    {
+        // Ambil user yang sesuai dengan lokasi_id yang dipilih
+        $users = User::where('lokasi_id', $lokasi_id)->with('jabatan')->get();
+
+        // Kembalikan response JSON untuk diakses oleh AJAX
+        return response()->json($users);
+    }
+
 }

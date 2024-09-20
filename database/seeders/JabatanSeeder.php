@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class BidangSeeder extends Seeder
+class JabatanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +15,9 @@ class BidangSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('bidangs')->insert([
-            'nama' => 'sekertariat',
-            'kode' => '01',
+        DB::table('jabatans')->insert([
+            'nama' => 'Kepala Bagian',
+            'kode' => '001',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

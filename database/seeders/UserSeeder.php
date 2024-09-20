@@ -17,7 +17,8 @@ class UserSeeder extends Seeder
     public function run()
     {
         // Ambil ID bidang dari tabel 'bidang' untuk digunakan sebagai foreign key
-        $bidangId = DB::table('bidangs')->where('kode', '01')->first()->id;
+        $lokasiId = DB::table('lokasis')->where('kode', '34')->first()->id;
+        $jabatanId = DB::table('jabatans')->where('kode', '001')->first()->id;
 
         // Tambahkan akun admin
         DB::table('users')->insert([
@@ -29,7 +30,8 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'), 
             'level' => 'admin',
             'hp' => '081615649784', 
-            'bidang_id' => $bidangId, 
+            'jabatan_id' => $jabatanId, 
+            'lokasi_id' => $lokasiId, 
             'alamat' => 'Jl. Mangga', 
             'created_at' => now(),
             'updated_at' => now(),

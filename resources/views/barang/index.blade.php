@@ -75,6 +75,7 @@
                             <th>Deskripsi</th>
                             <th>Kategori</th>
                             <th>Lokasi</th>
+                            <th>Penanggung Jawab</th>
                             <th>Tahun</th>
                             <th>Status</th>
                             <th width="60px">Aksi</th>
@@ -222,6 +223,7 @@
             {data: 'deskripsi', name: 'deskripsi'},
             {data: 'kategori.nama', name: 'kategori.nama'},
             {data: 'lokasi.nama', name: 'lokasi.nama'},
+            {data: 'user', name: 'user'},
             {data: 'tahun', name: 'tahun'},
             {data: 'status', name: 'status'},
             {

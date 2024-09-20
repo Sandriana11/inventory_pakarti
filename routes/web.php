@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,6 +53,8 @@ Route::middleware('auth')->group(function () {
             Route::post('{id}/update','UserController@update')->name('update');
             Route::delete('/{id}/delete','UserController@destroy')->name('delete');
         });
+        Route::get('/get-users-by-lokasi/{lokasi_id}', [UserController::class, 'getUsersByLokasi']);
+
 
         Route::prefix('/kerusakan')->name('crash.')->group(function () {
             Route::get('/','KerusakanController@index')->name('index');
@@ -109,14 +112,14 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}/delete','MaintenerController@destroy')->name('delete');
         });
         
-        Route::prefix('/bidang')->name('bidang.')->group(function () {
-            Route::get('/','BidangController@index')->name('index');
-            Route::get('/create','BidangController@create')->name('create');
-            Route::post('/store','BidangController@store')->name('store');
-            Route::get('/{id}','BidangController@show')->name('show');
-            Route::get('/{id}/edit','BidangController@edit')->name('edit');
-            Route::post('{id}/update','BidangController@update')->name('update');
-            Route::delete('/{id}/delete','BidangController@destroy')->name('delete');
+        Route::prefix('/jabatan')->name('jabatan.')->group(function () {
+            Route::get('/','JabatanController@index')->name('index');
+            Route::get('/create','JabatanController@create')->name('create');
+            Route::post('/store','JabatanController@store')->name('store');
+            Route::get('/{id}','JabatanController@show')->name('show');
+            Route::get('/{id}/edit','JabatanController@edit')->name('edit');
+            Route::post('{id}/update','JabatanController@update')->name('update');
+            Route::delete('/{id}/delete','JabatanController@destroy')->name('delete');
         });
 
         Route::prefix('/pegawai')->name('pegawai.')->group(function () {
@@ -158,5 +161,3 @@ Route::middleware('auth')->group(function () {
 
     });
 });
-
-// require __DIR__.'/auth.php';

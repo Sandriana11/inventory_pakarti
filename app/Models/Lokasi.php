@@ -21,4 +21,7 @@ class Lokasi extends Model
     public function barang(){
         return $this->hasOne(Barang::class, 'lokasi_id');
     }
+    public function user(){
+        return $this->hasOne(User::class, 'lokasi_id');
+    }
 }

@@ -4,7 +4,7 @@
     @endpush
     <div class="content">
         <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Tambah Inventaris</span>
+            <span>Ubah Inventaris</span>
         </div>
         <div class="block block-rounded">
             <div class="block-content">
@@ -48,6 +48,20 @@
                         </div>
                     </div>
                     <div class="row mb-4">
+                        <label class="col-sm-3 col-form-label" for="field-user_id">Penanggung Jawab</label>
+                        <div class="col-sm-6">
+                            <select class="form-select  {{ $errors->has('user_id') ? 'is-invalid' : '' }}"
+                                id="field-user_id" style="width: 100%;" name="user_id"
+                                data-placeholder="Pilih user">
+                                <option></option>
+                                @foreach ($user as $p)
+                                <option value="{{ $p->id }}" {{ (old('user_id', $data->user_id) == $p->id) ? 'selected="selected"' : '' }}>{{ $p->name }} - {{ $p->jabatan->nama }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('user_id')" class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-tahun">Tahun</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control {{ $errors->has('tahun') ? 'is-invalid' : '' }}"
@@ -76,7 +90,7 @@
 
     @push('scripts')
     <script src="/js/plugins/select2/js/select2.full.min.js"></script>
-    <script>
+    {{-- <script>
         var pegawai = $('#field-nip').select2();
 
         $('input[type=radio][name=tipe]').change(function() {
@@ -114,6 +128,27 @@
             });
         });
 
+    </script> --}}
+    <script>
+        $('#field-lokasi_id').change(function() {
+            var lokasiId = $(this).val();
+            if (lokasiId) {
+                $.ajax({
+                    url: '/get-users-by-lokasi/' + lokasiId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#field-user_id').empty();
+                        $('#field-user_id').append('<option></option>');
+                        $.each(data, function(key, value) {
+                            $('#field-user_id').append('<option value="'+ value.id +'">'+ value.name + ' - ' + value.jabatan.nama +'</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#field-user_id').empty();
+            }
+        });
     </script>
     @endpush
 </x-app-layout>

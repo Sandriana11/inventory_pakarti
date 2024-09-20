@@ -90,8 +90,10 @@
                     <th width="50px">No</th>
                     <th>No Inventaris</th>
                     <th>Nama Barang</th>
+                    <th>Deskripsi</th>
                     <th>Kategori</th>
                     <th>Lokasi</th>
+                    <th>Penanggung Jawab</th>
                     <th>Tahun</th>
                 </tr>
             </thead>
@@ -102,8 +104,10 @@
                         <td>{{ $no++ }}</td>
                         <td>{{ $a->nomor }}</td>
                         <td>{{ $a->nama }}</td>
+                        <td>{{ $a->deskripsi }}</td>
                         <td>{{ $a->kategori->nama }}</td>
                         <td>{{ $a->lokasi->nama }}</td>
+                        <td>{{ $a->user->name }} - {{ $a->user->jabatan->nama }}</td>
                         <td>{{ $a->tahun }}</td>
                     </tr>
                 @endforeach
