@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -134,6 +135,7 @@ Route::middleware('auth')->group(function () {
         });
 
         
+        Route::get('/inventaris/export-all', [InventarisController::class, 'exportAll'])->name('inventaris.exportAll');
         Route::prefix('/inventaris')->name('inventaris.')->group(function () {
             Route::get('/','InventarisController@index')->name('index');
             Route::get('/select','InventarisController@select')->name('select');

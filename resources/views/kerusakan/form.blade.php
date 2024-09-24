@@ -5,7 +5,7 @@
 
     <div class="content">
         <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>{{ isset($data) ? 'Edit Laporan Kerusakan' : 'Tambah Laporan Kerusakan' }}</span>
+            <span>{{ isset($data) ? 'Edit Laporan Kerusakan' : 'Tambah Laporan Kerusakaaan' }}</span>
         </div>
         <div class="block block-rounded">
             <div class="block-content">
@@ -21,12 +21,15 @@
                             <x-input-error :messages="$errors->get('tgl')" class="mt-2" />
                         </div>
                     </div>
+
+                    <!-- Hanya tampilkan field lokasi jika user adalah admin -->
+                    @if(auth()->user()->level == 'admin')
                     <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-lokasi_id">Lokasi</label>
                         <div class="col-sm-6">
                             <select class="form-select  {{ $errors->has('lokasi_id') ? 'is-invalid' : '' }}"
                                 id="field-lokasi_id" style="width: 100%;" name="lokasi_id"
-                                data-placeholder="Pilih Lokasi">
+                                data-placeholder="Pilih lokasi">
                                 <option></option>
                                 @foreach ($lokasi as $p)
                                 <option value="{{ $p->id }}"
@@ -37,11 +40,23 @@
                             <x-input-error :messages="$errors->get('lokasi_id')" class="mt-2" />
                         </div>
                     </div>
+                    @else
+                    <!-- Sembunyikan field lokasi, ambil lokasi_id dari user yang login -->
+                    <input type="hidden" name="lokasi_id" value="{{ auth()->user()->lokasi_id }}">
+                    @endif
+
                     <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-kategori_id">Kategori</label>
                         <div class="col-sm-6">
-                            <select class="form-select  {{ $errors->has('kategori_id') ? 'is-invalid' : '' }}" 
-                                id="field-kategori_id" style="width: 100%;" name="kategori_id" disabled>
+                            <select class="form-select  {{ $errors->has('kategori_id') ? 'is-invalid' : '' }}"
+                                id="field-kategori_id" style="width: 100%;" name="kategori_id"
+                                data-placeholder="Pilih kategori">
+                                <option></option>
+                                @foreach ($kategori as $p)
+                                <option value="{{ $p->id }}"
+                                    {{ (old('kategori_id') == $p->id) ? 'selected="selected"' : '' }}>{{ $p->nama }}
+                                </option>
+                                @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('kategori_id')" class="mt-2" />
                         </div>
@@ -75,9 +90,11 @@
 
     @push('scripts')
     <script>
-        // $(document).ready(function() {
         $('#field-lokasi_id').select2();
-        
+
+        // Tentukan lokasi_id berdasarkan user
+        var lokasiId = "{{ auth()->user()->level == 'admin' ? '' : auth()->user()->lokasi_id }}";
+
         $('#field-lokasi_id').on('change', function(e){
             if($(this).val() != ""){
                 $('#field-kategori_id').prop('disabled', false);
@@ -88,7 +105,6 @@
             $("#field-barang_id").val('').trigger('change');
         });
 
-        
         $('#field-kategori_id').on('change', function(e){
             if($(this).val() != ""){
                 $('#field-barang_id').prop('disabled', false);
@@ -105,11 +121,10 @@
                 dataType: 'JSON',
                 delay: 250,
                 data: function (params) {
-                    var lokasi_id = $('#field-lokasi_id').val();
                     var kategori_id = $('#field-kategori_id').val();
                     var query = {
                         search: params.term,
-                        id: lokasi_id,
+                        id: lokasiId != "" ? lokasiId : $('#field-lokasi_id').val(),
                         kategori : kategori_id,
                     }
                     return query;
@@ -122,7 +137,6 @@
             }
         });
 
-        
         $('#field-kategori_id').select2({
             placeholder: 'Pilih Kategori',
             ajax: {
@@ -142,7 +156,7 @@
                 }
             }
         });
-        // });
+
         $(".tgl").flatpickr({
             altInput: true,
             altFormat: "j F Y",
@@ -152,4 +166,3 @@
     </script>
     @endpush
 </x-app-layout>
-

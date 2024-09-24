@@ -15,6 +15,10 @@
                     <i class="si si-download me-1"></i>
                     Download
                 </button>
+                <a href="{{ route('inventaris.exportAll') }}" class="btn btn-sm btn-success">
+                    <i class="si si-cloud-download me-1"></i>
+                    Export All
+                </a>
             </div>
 
         </div>

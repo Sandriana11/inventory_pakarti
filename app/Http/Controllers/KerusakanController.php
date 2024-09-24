@@ -85,10 +85,12 @@ class KerusakanController extends Controller
     public function create()
     {
         $barang = Barang::orderBy('nama', 'ASC')->get();
+        $kategori = Kategori::orderBy('nama', 'ASC')->get();
         $lokasi = Lokasi::orderBy('nama', 'ASC')->get();
 
         return view('kerusakan.form',[
             'barang' => $barang,
+            'kategori' => $kategori,
             'lokasi' => $lokasi
         ]);
     }
@@ -104,7 +106,6 @@ class KerusakanController extends Controller
         // dd($request->all());
         $rules = [
             'barang_id' => 'required',
-            'lokasi_id' => 'required',
             'kategori_id' => 'required',
             'tgl' => 'required|string',
             'keterangan' => 'required',
@@ -112,12 +113,10 @@ class KerusakanController extends Controller
 
         $pesan = [
             'barang_id.required' => 'Barang Wajib Diisi!',
-            'lokasi_id.required' => 'Lokasi Wajib Diisi!',
             'kategori_id.required' => 'Kategori Wajib Diisi!',
             'tgl.required' => 'Tanggal Laporan Wajib Diisi!',
             'keterangan.required' => 'Keterangan Barang Wajib Diisi!',
         ];
-
 
         $validator = Validator::make($request->all(), $rules, $pesan);
         if ($validator->fails()){
@@ -125,11 +124,16 @@ class KerusakanController extends Controller
         }else{
             DB::beginTransaction();
             try{
+                // Ambil user yang sedang login
+                $user = auth()->user();
+                
+                // Cek apakah level user bukan 'admin', lalu ambil lokasi_id dari user
+                $lokasi_id = $user->level != 'admin' ? $user->lokasi_id : $request->lokasi_id;
                 
                 $data = new Kerusakan();
                 $data->nomor = $this->getNumber();
                 $data->tgl = $request->tgl;
-                $data->lokasi_id = $request->lokasi_id;
+                $data->lokasi_id = $lokasi_id;
                 $data->kategori_id = $request->kategori_id;
                 $data->barang_id = $request->barang_id;
                 $data->keterangan = $request->keterangan;

@@ -367,4 +367,24 @@ public function export(Request $request)
 
     return $pdf->stream('Laporan Inventaris.pdf');
 }
+
+public function exportAll()
+{
+    // Ambil semua data dengan status 'tersedia'
+    $data = Barang::select('nomor', 'nama', 'deskripsi', 'kategori_id', 'lokasi_id', 'tahun', 'user_id')
+        ->with(['kategori', 'lokasi', 'user.jabatan']) // Pastikan relasi sudah ada di model Barang
+        ->where('status', 'tersedia') // Hanya data yang statusnya 'tersedia'
+        ->get();
+        
+    // Format data untuk view PDF
+    $pdf = Pdf::loadView('barang.export', [
+        'data' => $data,
+        'tgl' => now()->format('Y-m-d'), // Tanggal otomatis ke hari ini
+        'status' => 'Tersedia'
+    ]);
+
+    return $pdf->stream('Laporan Inventaris - Tersedia.pdf');
+}
+
+
 }
