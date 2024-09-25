@@ -1,7 +1,55 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="/css/bootstrap.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin: 0;
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid #000;
+            margin-top: 10px;
+        }
+
+        .mb-0 {
+            margin-bottom: 0;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -9,14 +57,12 @@
         <table width="100%">
             <tr>
                 <td>
-                    <img src="/images/logo_jabar.png" width="80pt"/>
+                    <img src="images/logo1_pakarti.png" width="80pt"/>
                 </td>
                 <td class="text-center">
-                    <h1 class="text-center" style="font-weight: bold;font-size: 12pt;">PEMERINTAH DAERAH PROVINSI JAWA BARAT</h1>
-                    <h1 class="h4 text-center" style="font-weight: bold;font-size: 14pt;">DINAS KOMUNIKASI DAN INFORMATIKA</h1>
-                    <p class="mb-0" style="font-size: 10pt;margin-bottom:10px">Jalan Tamansari No.55 Tlp. (022) 2502898. Faksimili (022) 2511505</p>
-                    <p class="mb-0" style="font-size: 10pt;">Website: diskominfo.jabarprov.go.id email: diskominfo@jabarprov.go.id
-                        Bandung 40132
+                    <h1 class="text-center" style="font-weight: bold;font-size: 12pt;">PT PAKARTI TIRTOAGUNG</h1>
+                    <p class="mb-0" style="font-size: 10pt;margin-bottom:10px">Jl. Raya Tengah No. 4 - Ps. Rebo Jakarta Timur Tlp. (021) 87783422 / 87783423. Faksimili (021)8403133</p>
+                    <p class="mb-0" style="font-size: 10pt;">Website: www.pakarti.com Email: Info@pakarti.com
                         </p>
                 </td>
             </tr>
@@ -29,7 +75,7 @@
         <table class="table table-bordered datatable w-100">
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>No</th>
                     <th>No Perbaikan</th>
                     <th>No Laporan</th>
                     <th>Tanggal</th>

@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use DataTables;
 use PDF;
 use App\DataTables\PerbaikanDataTable;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+
 class PerbaikanController extends Controller
 {
     /**
@@ -339,7 +341,7 @@ class PerbaikanController extends Controller
             return $q->where('maintenance.status', $status);
         })->latest()->get();
 
-        $pdf = PDF::loadView('perbaikan.export', [
+        $pdf = FacadePdf::loadView('perbaikan.export', [
             'data' => $data,
             'tgl' => $tgl,
             'status' => $status,
