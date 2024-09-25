@@ -35,6 +35,7 @@
                             <th>Username</th>
                             <th>Jabatan</th>
                             <th>Departemen</th>
+                            <th>Role</th>
                             <th width="60px">Aksi</th>
                         </tr>
                     </thead>
@@ -73,6 +74,7 @@
                     {data: 'username', name: 'username'},
                     {data: 'jabatan.nama', name: 'jabatan.nama'},
                     {data: 'lokasi.nama', name: 'lokasi.nama'},
+                    {data: 'level', name: 'level'},
                     {
                         data: 'action', 
                         name: 'action', 
