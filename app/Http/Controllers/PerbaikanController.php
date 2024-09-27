@@ -271,10 +271,8 @@ class PerbaikanController extends Controller
     
     public function confirm($id, Request $request)
     {
-        // dd($request->all());
         DB::beginTransaction();
         try{
-
             $data = Perbaikan::where('id', $id)->first();
             $data->status = 1;
             $data->tgl_selesai = Carbon::now();
@@ -287,9 +285,9 @@ class PerbaikanController extends Controller
             
             $b = Barang::where('id', $c->barang_id)->first();
             if($request->status == 'rusak'){
-                $b->status = 'tersedia';
-            }else{
                 $b->status = 'rusak';
+            }else{
+                $b->status = 'tersedia';
             }
             $b->save();
 
