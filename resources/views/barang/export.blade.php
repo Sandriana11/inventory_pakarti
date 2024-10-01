@@ -93,7 +93,7 @@
                     <th>Deskripsi</th>
                     <th>Kategori</th>
                     <th>Lokasi</th>
-                    <th>Penanggung Jawab</th>
+                    <th>Pengguna</th>
                     <th>Tahun</th>
                 </tr>
             </thead>

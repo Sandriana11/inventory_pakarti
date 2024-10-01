@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="row mb-4">
-                        <label class="col-sm-3 col-form-label" for="field-user_id">Penanggung Jawab</label>
+                        <label class="col-sm-3 col-form-label" for="field-user_id">Pengguna</label>
                         <div class="col-sm-6">
                             <select class="form-select  {{ $errors->has('user_id') ? 'is-invalid' : '' }}"
                                 id="field-user_id" style="width: 100%;" name="user_id"

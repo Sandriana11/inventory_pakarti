@@ -14,6 +14,7 @@ use DataTables;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class KerusakanController extends Controller
@@ -38,9 +39,11 @@ class KerusakanController extends Controller
             })
             ->when(isset($tgl), function ($q) use ($tgl) {
                 return $q->whereBetween('crashes.tgl', $tgl);
-            })->when(auth()->user()->level == 'pegawai', function ($q){
+            })
+            ->when(auth()->user()->level == 'pegawai', function ($q){
                 return $q->where('crashes.user_id', auth()->user()->id);
-            })->latest()->get();
+            })
+            ->latest()->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -292,24 +295,30 @@ class KerusakanController extends Controller
     }
 
     public function export(Request $request)
-    {
-        $tgl = explode(" - ",$request->tgl);
-        $status = $request->status;
-        // dd($tgl);
-        $data = Kerusakan::select('crashes.*')->with(['barang', 'pelapor'])
+{
+    $tgl = explode(" - ", $request->tgl);
+    $status = $request->status;
+    $user = Auth::user(); // Mendapatkan user yang sedang login
+    
+    $data = Kerusakan::select('crashes.*')->with(['barang', 'pelapor'])
         ->when(isset($tgl), function ($q) use ($tgl) {
             return $q->whereBetween('crashes.tgl', $tgl);
         })->when(isset($status), function ($q) use ($status) {
             return $q->where('crashes.status', $status);
-        })->latest()->get();
+        })
+        // Tambahkan kondisi ini untuk user level "pegawai"
+        ->when($user->level == 'pegawai', function ($q) use ($user) {
+            return $q->where('crashes.user_id', $user->id); // Asumsi 'user_id' adalah ID pemilik kerusakan
+        })
+        ->latest()->get();
 
-        $pdf = FacadePdf::loadView('kerusakan.export', [
-            'data' => $data,
-            'tgl' => $tgl,
-            'status' => $status,
-        ]);
+    $pdf = FacadePdf::loadView('kerusakan.export', [
+        'data' => $data,
+        'tgl' => $tgl,
+        'status' => $status,
+    ]);
 
-        return $pdf->stream('Laporan Kerusakan.pdf');
-        
-    }
+    return $pdf->stream('Laporan Kerusakan.pdf');
+}
+
 }
