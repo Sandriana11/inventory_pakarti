@@ -46,7 +46,7 @@ class DashboardController extends Controller
                 ->when(isset($tahun), function ($q) use ($tahun) {
                     return $q->where('tahun', $tahun);
                 })
-                ->where('user_id', $user->id)
+                // ->where('user_id', $user->id)
                 ->whereNotIn('id', $kerusakan)
                 ->orderBy('tahun', 'DESC')
                 ->get();
