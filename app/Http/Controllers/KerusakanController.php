@@ -316,7 +316,7 @@ class KerusakanController extends Controller
         'data' => $data,
         'tgl' => $tgl,
         'status' => $status,
-    ]);
+        ])->setPaper('a4', 'landscape');  // Set orientation ke landscape
 
     return $pdf->stream('Laporan Kerusakan.pdf');
 }

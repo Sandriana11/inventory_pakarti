@@ -87,7 +87,7 @@
         <table class="table table-bordered w-100">
             <thead>
                 <tr>
-                    <th width="50px">No</th>
+                    <th width="5px">No</th>
                     <th>No Inventaris</th>
                     <th>Nama Barang</th>
                     <th>Deskripsi</th>

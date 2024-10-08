@@ -343,7 +343,7 @@ class PerbaikanController extends Controller
             'data' => $data,
             'tgl' => $tgl,
             'status' => $status,
-        ]);
+            ])->setPaper('a4', 'landscape');  // Set orientation ke landscape
 
         return $pdf->download('Laporan Perbaikan.pdf');
         

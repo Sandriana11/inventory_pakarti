@@ -363,7 +363,9 @@ public function export(Request $request)
         'data' => $data,
         'tgl' => $tgl,
         'status' => $status
-    ]);
+    ])->setPaper('a4', 'landscape');  // Set orientation ke landscape
+    
+
 
     return $pdf->stream('Laporan Inventaris.pdf');
 }
@@ -379,9 +381,10 @@ public function exportAll()
     // Format data untuk view PDF
     $pdf = Pdf::loadView('barang.export', [
         'data' => $data,
-        'tgl' => now()->format('Y-m-d'), // Tanggal otomatis ke hari ini
+        'tgl' => now()->format('Y-m-d'),
         'status' => 'Tersedia'
-    ]);
+    ])->setPaper('a4', 'landscape');  // Set orientation ke landscape
+    
 
     return $pdf->stream('Laporan Inventaris - Tersedia.pdf');
 }
