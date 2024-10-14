@@ -7,6 +7,8 @@
             <div class="block-content">
                 <form method="POST" action="{{ route('password.update')}}">
                     @csrf
+                    @method('PATCH')
+
                     <div class="row mb-4">
                         <label class="col-sm-3 col-form-label" for="field-password">Password</label>
                         <div class="col-sm-6">

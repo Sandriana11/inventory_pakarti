@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 class ProfileController extends Controller
 {
     /**
@@ -38,6 +40,21 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+
+    public function passwordUpdate(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('status', 'password-updated');
+    }
+
 
     /**
      * Delete the user's account.
